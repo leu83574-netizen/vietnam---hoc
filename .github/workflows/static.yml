@@ -1,0 +1,2585 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Việt Nam Học – Vietnamese Studies</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <style>
+        /* ============================================
+           CSS VARIABLES & RESET
+        ============================================ */
+        :root {
+            --primary: #B22222;
+            --primary-dark: #8B0000;
+            --primary-light: #DC3545;
+            --gold: #DAA520;
+            --gold-light: #F4D03F;
+            --dark: #1a1a2e;
+            --darker: #0f0f1a;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --white: #ffffff;
+            --gradient-primary: linear-gradient(135deg, var(--primary-dark), var(--primary), #e74c3c);
+            --gradient-gold: linear-gradient(135deg, var(--gold), var(--gold-light));
+            --gradient-dark: linear-gradient(135deg, var(--darker), var(--dark), #16213e);
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --shadow-gold: 0 10px 40px rgba(218,165,32,0.3);
+            --radius: 16px;
+            --radius-sm: 8px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            background: var(--white);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            line-height: 1.3;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ============================================
+           PRELOADER
+        ============================================ */
+        .preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--gradient-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-content {
+            text-align: center;
+        }
+
+        .preloader-star {
+            font-size: 60px;
+            color: var(--gold);
+            animation: spin 2s linear infinite;
+        }
+
+        .preloader-text {
+            color: var(--white);
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================
+           NAVBAR
+        ============================================ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            padding: 15px 0;
+            transition: var(--transition);
+            background: transparent;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0,0,0,0.1);
+            padding: 10px 0;
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled .nav-logo {
+            color: var(--primary-dark);
+        }
+
+        .nav-logo i {
+            font-size: 28px;
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled .nav-links a {
+            color: var(--dark);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: var(--primary);
+            color: var(--white) !important;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled .nav-toggle {
+            color: var(--dark);
+        }
+
+        /* Mobile Menu */
+        .nav-mobile {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26,26,46,0.98);
+            backdrop-filter: blur(20px);
+            z-index: 9998;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-mobile.open {
+            display: flex;
+        }
+
+        .nav-mobile a {
+            color: var(--white);
+            font-size: 20px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-family: 'Playfair Display', serif;
+            transition: var(--transition);
+        }
+
+        .nav-mobile a:hover {
+            background: var(--primary);
+        }
+
+        .nav-mobile-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* ============================================
+           HERO SECTION
+        ============================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: var(--gradient-dark);
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=1920&q=80') center/cover;
+            opacity: 0.25;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(139,0,0,0.6), rgba(26,26,46,0.8));
+        }
+
+        /* Floating particles */
+        .particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float-particle 8s infinite;
+        }
+
+        @keyframes float-particle {
+            0% { opacity: 0; transform: translateY(100vh) scale(0); }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 0 20px;
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 24px;
+            background: rgba(218,165,32,0.2);
+            border: 1px solid var(--gold);
+            border-radius: 50px;
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 80px);
+            color: var(--white);
+            font-weight: 900;
+            margin-bottom: 10px;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(24px, 4vw, 40px);
+            color: var(--gold-light);
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease 0.7s both;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.8);
+            max-width: 650px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease 0.9s both;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 1.1s both;
+        }
+
+        .btn {
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--white);
+            box-shadow: 0 8px 30px rgba(178,34,34,0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(178,34,34,0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255,255,255,0.4);
+        }
+
+        .btn-outline:hover {
+            background: var(--white);
+            color: var(--dark);
+            border-color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        /* ============================================
+           STATS BAR
+        ============================================ */
+        .stats-bar {
+            background: var(--white);
+            padding: 30px 0;
+            margin-top: -50px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 40px 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-number .counter-suffix {
+            font-size: 28px;
+            color: var(--gold);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           SECTION STYLES
+        ============================================ */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-dark {
+            background: var(--gradient-dark);
+            color: var(--white);
+        }
+
+        .section-light {
+            background: var(--light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 20px;
+            background: rgba(178,34,34,0.1);
+            color: var(--primary);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .section-dark .section-tag {
+            background: rgba(218,165,32,0.2);
+            color: var(--gold);
+        }
+
+        .section-header h2 {
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            font-size: 17px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .section-dark .section-header p {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* ============================================
+           ABOUT SECTION
+        ============================================ */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+        }
+
+        .about-image img {
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+        }
+
+        .about-image-badge {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: 20px 28px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .about-image-badge .badge-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 900;
+        }
+
+        .about-image-badge .badge-text {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .about-text h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .about-text h2 span {
+            color: var(--primary);
+        }
+
+        .about-text p {
+            color: var(--gray);
+            margin-bottom: 24px;
+            font-size: 16px;
+        }
+
+        .about-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .about-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--light);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .about-feature:hover {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .about-feature i {
+            color: var(--primary);
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(178,34,34,0.1);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .about-feature span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           BRANCHES (Chuyên ngành)
+        ============================================ */
+        .branches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .branch-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius);
+            padding: 40px 30px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .branch-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-gold);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .branch-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .branch-card:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .branch-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .branch-card:hover .branch-icon {
+            background: var(--gradient-gold);
+            transform: scale(1.1);
+        }
+
+        .branch-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        .branch-card p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+        }
+
+        /* ============================================
+           TIMELINE (Hội thảo)
+        ============================================ */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--gradient-primary);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: 45%;
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border: 4px solid var(--white);
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 0 4px rgba(178,34,34,0.2);
+        }
+
+        .timeline-year {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .timeline-content h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .timeline-content p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .timeline-info {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .timeline-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--primary);
+            background: rgba(178,34,34,0.08);
+            padding: 4px 12px;
+            border-radius: 50px;
+        }
+
+        /* ============================================
+           WORLD MAP SECTION
+        ============================================ */
+        .world-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .world-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .world-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .world-card-header {
+            padding: 24px 28px;
+            background: var(--gradient-primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .world-card-header .flag {
+            font-size: 36px;
+        }
+
+        .world-card-header h3 {
+            font-size: 22px;
+        }
+
+        .world-card-header span {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .world-card-body {
+            padding: 28px;
+        }
+
+        .world-card-body p {
+            color: var(--gray);
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        .world-universities {
+            list-style: none;
+        }
+
+        .world-universities li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-light);
+            font-size: 14px;
+        }
+
+        .world-universities li:last-child {
+            border-bottom: none;
+        }
+
+        .world-universities li i {
+            color: var(--gold);
+        }
+
+        /* ============================================
+           CHARTS SECTION
+        ============================================ */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .chart-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius);
+            padding: 30px;
+        }
+
+        .chart-card h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        /* ============================================
+           CAREER SECTION
+        ============================================ */
+        .career-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .career-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .career-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .career-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .career-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .career-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(178,34,34,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .career-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .career-card p {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+
+        .career-salary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(218,165,32,0.1);
+            color: var(--gold);
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+
+        /* ============================================
+           TABS (Chương trình đào tạo)
+        ============================================ */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border: 2px solid var(--gray-light);
+            background: var(--white);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .subject-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            background: var(--light);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .subject-item:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: scale(1.02);
+        }
+
+        .subject-item i {
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .subject-item:hover i {
+            color: var(--gold);
+        }
+
+        /* ============================================
+           TESTIMONIALS / QUOTES
+        ============================================ */
+        .quotes-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-slide {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .quote-slide.active {
+            display: block;
+        }
+
+        .quote-slide .quote-icon {
+            font-size: 48px;
+            color: var(--gold);
+            margin-bottom: 24px;
+        }
+
+        .quote-slide blockquote {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-style: italic;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .quote-author {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .quote-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .quote-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quote-dot.active {
+            background: var(--gold);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        /* ============================================
+           CONTACT SECTION
+        ============================================ */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .contact-info h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .contact-info p {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .contact-detail-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(178,34,34,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .contact-detail div h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .contact-detail div span {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .contact-form {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(178,34,34,0.1);
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient-primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(178,34,34,0.4);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #28a745;
+            color: var(--white);
+            padding: 16px 28px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-lg);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transform: translateX(120%);
+            transition: var(--transition);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* ============================================
+           FOOTER
+        ============================================ */
+        .footer {
+            background: var(--darker);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 0 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-about h3 {
+            color: var(--white);
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .footer-about h3 span {
+            color: var(--gold);
+        }
+
+        .footer-about p {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .footer-socials a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .footer-socials a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer h4 {
+            color: var(--white);
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+            padding-left: 8px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        /* ============================================
+           BACK TO TOP
+        ============================================ */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(178,34,34,0.5);
+        }
+
+        /* ============================================
+           DARK MODE TOGGLE
+        ============================================ */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--dark);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 999;
+            transition: var(--transition);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background: var(--dark);
+            color: var(--white);
+        }
+
+        body.dark-mode .section:not(.section-dark) {
+            background: var(--dark);
+        }
+
+        body.dark-mode .section-light {
+            background: var(--darker);
+        }
+
+        body.dark-mode .navbar.scrolled {
+            background: rgba(26,26,46,0.97);
+        }
+
+        body.dark-mode .navbar.scrolled .nav-links a {
+            color: rgba(255,255,255,0.8);
+        }
+
+        body.dark-mode .navbar.scrolled .nav-logo {
+            color: var(--white);
+        }
+
+        body.dark-mode .stats-grid,
+        body.dark-mode .timeline-content,
+        body.dark-mode .career-card,
+        body.dark-mode .world-card,
+        body.dark-mode .contact-form {
+            background: #16213e;
+            color: var(--white);
+        }
+
+        body.dark-mode .timeline-content h3,
+        body.dark-mode .career-card h3,
+        body.dark-mode .about-text h2,
+        body.dark-mode .contact-info h3 {
+            color: var(--white);
+        }
+
+        body.dark-mode .about-feature {
+            background: rgba(255,255,255,0.05);
+        }
+
+        body.dark-mode .subject-item {
+            background: rgba(255,255,255,0.05);
+            color: var(--white);
+        }
+
+        body.dark-mode .tab-btn {
+            background: transparent;
+            color: rgba(255,255,255,0.6);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group textarea,
+        body.dark-mode .form-group select {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.15);
+            color: var(--white);
+        }
+
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        @media (max-width: 992px) {
+            .about-grid,
+            .contact-grid,
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-image {
+                order: -1;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 50px;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .world-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== PRELOADER ==================== -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-star"><i class="fas fa-star"></i></div>
+            <div class="preloader-text">VIỆT NAM HỌC</div>
+        </div>
+    </div>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="nav-logo">
+                <i class="fas fa-star"></i>
+                Việt Nam Học
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Trang chủ</a></li>
+                <li><a href="#about">Giới thiệu</a></li>
+                <li><a href="#branches">Chuyên ngành</a></li>
+                <li><a href="#timeline">Hội thảo</a></li>
+                <li><a href="#world">Thế giới</a></li>
+                <li><a href="#stats">Số liệu</a></li>
+                <li><a href="#career">Nghề nghiệp</a></li>
+                <li><a href="#contact">Liên hệ</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="nav-mobile" id="navMobile">
+        <button class="nav-mobile-close" id="navMobileClose"><i class="fas fa-times"></i></button>
+        <a href="#home">Trang chủ</a>
+        <a href="#about">Giới thiệu</a>
+        <a href="#branches">Chuyên ngành</a>
+        <a href="#timeline">Hội thảo</a>
+        <a href="#world">Thế giới</a>
+        <a href="#stats">Số liệu</a>
+        <a href="#career">Nghề nghiệp</a>
+        <a href="#contact">Liên hệ</a>
+    </div>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="particles" id="particles"></div>
+        <div class="hero-content">
+            <div class="hero-badge">Vietnamese Studies • Vietnamology</div>
+            <h1>Việt Nam <span>Học</span></h1>
+            <div class="hero-sub">Nghiên cứu đất nước & con người Việt Nam</div>
+            <p>Khám phá ngành khoa học liên ngành nghiên cứu toàn diện về văn hóa, lịch sử, ngôn ngữ, xã hội Việt Nam – từ góc nhìn trong nước đến xu hướng quốc tế.</p>
+            <div class="hero-btns">
+                <a href="#about" class="btn btn-primary"><i class="fas fa-book-open"></i> Khám phá ngay</a>
+                <a href="#timeline" class="btn btn-outline"><i class="fas fa-play-circle"></i> Dòng thời gian</a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>Cuộn xuống</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- ==================== STATS BAR ==================== -->
+    <div class="stats-bar">
+        <div class="container">
+            <div class="stats-grid" data-aos="fade-up">
+                <div class="stat-item">
+                    <div class="stat-number"><span class="counter" data-target="7">0</span></div>
+                    <div class="stat-label">Kỳ Hội thảo Quốc tế</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number"><span class="counter" data-target="76">0</span><span class="counter-suffix">+</span></div>
+                    <div class="stat-label">Trường ĐH/CĐ đào tạo</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number"><span class="counter" data-target="36">0</span><span class="counter-suffix">+</span></div>
+                    <div class="stat-label">Quốc gia tham gia</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number"><span class="counter" data-target="400">0</span><span class="counter-suffix">%</span></div>
+                    <div class="stat-label">Tăng trưởng học tiếng Việt (2024)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ABOUT ==================== -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image" data-aos="fade-right">
+                    <img src="https://images.unsplash.com/photo-1555921015-5532091f6026?w=800&q=80" alt="Vietnam Culture">
+                    <div class="about-image-badge">
+                        <div class="badge-number">60+</div>
+                        <div class="badge-text">Năm truyền thống</div>
+                    </div>
+                </div>
+                <div class="about-text" data-aos="fade-left">
+                    <div class="section-tag">Giới thiệu</div>
+                    <h2>Ngành <span>Việt Nam Học</span> là gì?</h2>
+                    <p>Việt Nam học (Vietnamese Studies / Vietnamology) là ngành khoa học <strong>liên ngành</strong> nghiên cứu về đất nước và con người Việt Nam thông qua các thành tố: văn hóa, lịch sử, địa lý, ngôn ngữ, văn học, phong tục tập quán.</p>
+                    <p>Ngành trang bị cho sinh viên kiến thức cơ bản về khoa học xã hội – nhân văn, kỹ năng thực hành về quan hệ quốc tế, năng lực giao tiếp xã hội và sử dụng ngoại ngữ trong công tác chuyên môn.</p>
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <i class="fas fa-landmark"></i>
+                            <span>Văn hóa & Lịch sử</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-language"></i>
+                            <span>Ngôn ngữ & Văn học</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-globe-asia"></i>
+                            <span>Địa lý & Xã hội</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-plane"></i>
+                            <span>Du lịch & Hội nhập</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== BRANCHES (Chuyên ngành) ==================== -->
+    <section class="section section-dark" id="branches">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-tag">Chuyên ngành</div>
+                <h2>Các lĩnh vực nghiên cứu chính</h2>
+                <p>Ngành Việt Nam học bao gồm nhiều nhánh nghiên cứu đa dạng, từ văn hóa truyền thống đến các vấn đề xã hội đương đại.</p>
+            </div>
+            <div class="branches-grid">
+                <div class="branch-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="branch-icon"><i class="fas fa-theater-masks"></i></div>
+                    <h3>Văn hóa Việt Nam</h3>
+                    <p>Nghiên cứu phong tục, tập quán, lễ hội, nghệ thuật, ẩm thực và văn hóa dân gian – những giá trị cốt lõi tạo nên bản sắc dân tộc.</p>
+                </div>
+                <div class="branch-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="branch-icon"><i class="fas fa-scroll"></i></div>
+                    <h3>Lịch sử Việt Nam</h3>
+                    <p>Khám phá các giai đoạn lịch sử, sự kiện trọng đại và nhân vật lịch sử qua hàng nghìn năm dựng nước và giữ nước.</p>
+                </div>
+                <div class="branch-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="branch-icon"><i class="fas fa-comments"></i></div>
+                    <h3>Ngôn ngữ & Văn học</h3>
+                    <p>Nghiên cứu tiếng Việt, ngữ âm, ngữ pháp, phương ngữ, văn học cổ điển và hiện đại – cầu nối giao tiếp và truyền bá văn hóa.</p>
+                </div>
+                <div class="branch-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="branch-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3>Địa lý & Môi trường</h3>
+                    <p>Tìm hiểu đặc điểm địa lý, khí hậu, tài nguyên thiên nhiên và các thách thức môi trường đương đại của Việt Nam.</p>
+                </div>
+                <div class="branch-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="branch-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Kinh tế & Xã hội</h3>
+                    <p>Phân tích các khía cạnh kinh tế, chính trị, xã hội, dân số và quá trình hội nhập quốc tế của Việt Nam.</p>
+                </div>
+                <div class="branch-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="branch-icon"><i class="fas fa-suitcase-rolling"></i></div>
+                    <h3>Du lịch & Quản lý</h3>
+                    <p>Ứng dụng Việt Nam học vào lĩnh vực du lịch, hướng dẫn viên, quản trị lữ hành và marketing du lịch quốc tế.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CURRICULUM (Chương trình đào tạo) ==================== -->
+    <section class="section section-light" id="curriculum">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-tag">Đào tạo</div>
+                <h2>Chương trình học tiêu biểu</h2>
+                <p>Sinh viên ngành Việt Nam học được đào tạo toàn diện qua 4 năm với các học phần đa dạng.</p>
+            </div>
+
+            <div class="tabs" data-aos="fade-up">
+                <button class="tab-btn active" data-tab="tab-general">Đại cương</button>
+                <button class="tab-btn" data-tab="tab-core">Cơ sở ngành</button>
+                <button class="tab-btn" data-tab="tab-major">Chuyên ngành</button>
+                <button class="tab-btn" data-tab="tab-practice">Thực hành</button>
+            </div>
+
+            <div class="tab-content active" id="tab-general" data-aos="fade-up">
+                <div class="subjects-grid">
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Triết học Mác – Lênin</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Kinh tế chính trị</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Tư tưởng Hồ Chí Minh</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Lịch sử Đảng CSVN</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Ngoại ngữ (Anh/Pháp/Nhật)</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Tin học đại cương</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Pháp luật đại cương</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Xã hội học đại cương</div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-core">
+                <div class="subjects-grid">
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Cơ sở văn hóa Việt Nam</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Cơ sở ngôn ngữ học</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Địa lý Việt Nam</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Lịch sử Việt Nam</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Văn học dân gian Việt Nam</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Hán Nôm cơ sở</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Dân tộc học đại cương</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> VN trong Đông Nam Á</div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-major">
+                <div class="subjects-grid">
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Tôn giáo – tín ngưỡng VN</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Phong tục tập quán VN</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Lịch sử văn học VN</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Văn hóa ẩm thực VN</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Gia đình – Làng xã người Việt</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Lễ hội Việt Nam</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Nghệ thuật biểu diễn VN</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Kiến trúc truyền thống VN</div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-practice">
+                <div class="subjects-grid">
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Nghiệp vụ hướng dẫn du lịch</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Quản trị lữ hành</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Marketing du lịch</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Nghiệp vụ báo chí</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Tổ chức sự kiện</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Thực tập thực tế</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Phương pháp nghiên cứu</div>
+                    <div class="subject-item"><i class="fas fa-check-circle"></i> Khóa luận tốt nghiệp</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== TIMELINE (Hội thảo QT) ==================== -->
+    <section class="section" id="timeline">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-tag">Dòng thời gian</div>
+                <h2>Hội thảo Quốc tế Việt Nam học</h2>
+                <p>Diễn đàn học thuật uy tín nhất của ngành Việt Nam học, quy tụ hàng nghìn nhà nghiên cứu từ hàng chục quốc gia.</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-content">
+                        <span class="timeline-year">1998</span>
+                        <h3>Hội thảo lần thứ I</h3>
+                        <p>Hội thảo quốc tế Việt Nam học lần đầu tiên được tổ chức tại Hà Nội – đánh dấu bước ngoặt cho ngành.</p>
+                        <div class="timeline-info">
+                            <span><i class="fas fa-map-marker-alt"></i> Hà Nội</span>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-left">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2004</span>
+                        <h3>Hội thảo lần thứ II</h3>
+                        <p>Tổ chức tại Dinh Thống Nhất, TP.HCM. Gần 500 nhà nghiên cứu, 115 học giả từ 22 quốc gia tham dự.</p>
+                        <div class="timeline-info">
+                            <span><i class="fas fa-map-marker-alt"></i> TP.HCM</span>
+                            <span><i class="fas fa-users"></i> 500 đại biểu</span>
+                            <span><i class="fas fa-globe"></i> 22 quốc gia</span>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2008</span>
+                        <h3>Hội thảo lần thứ III</h3>
+                        <p>Quay trở lại Hà Nội với chủ đề hội nhập và phát triển – mở rộng phạm vi nghiên cứu.</p>
+                        <div class="timeline-info">
+                            <span><i class="fas fa-map-marker-alt"></i> Hà Nội</span>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-left">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2012</span>
+                        <h3>Hội thảo lần thứ IV</h3>
+                        <p>Quy mô lớn nhất với 1.780 nhà nghiên cứu đăng ký, 300+ đại biểu nước ngoài từ 36 quốc gia, gần 400 tham luận.</p>
+                        <div class="timeline-info">
+                            <span><i class="fas fa-map-marker-alt"></i> Hà Nội</span>
+                            <span><i class="fas fa-users"></i> 1.780 đăng ký</span>
+                            <span><i class="fas fa-globe"></i> 36 quốc gia</span>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2016</span>
+                        <h3>Hội thảo lần thứ V</h3>
+                        <p>Tập trung vào chủ đề phát triển bền vững – đánh dấu sự trưởng thành của ngành Việt Nam học.</p>
+                        <div class="timeline-info">
+                            <span><i class="fas fa-map-marker-alt"></i> Hà Nội</span>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-left">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2021</span>
+                        <h3>Hội thảo lần thứ VI</h3>
+                        <p>Nhận 730 tham luận, chọn 400 bài kỷ yếu và 120 báo cáo toàn văn. Chủ đề: Phát huy giá trị, khơi dậy tiềm năng.</p>
+                        <div class="timeline-info">
+                            <span><i class="fas fa-map-marker-alt"></i> HN & HCM</span>
+                            <span><i class="fas fa-file-alt"></i> 730 tham luận</span>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2024–2025</span>
+                        <h3>Hội thảo lần thứ VII</h3>
+                        <p>Phiên TP.HCM (12/2024): 52 bài khoa học. Phiên Hà Nội dự kiến tháng 8/2025. Chủ đề: Bối cảnh xuyên văn hóa & Kỷ nguyên mới.</p>
+                        <div class="timeline-info">
+                            <span><i class="fas fa-map-marker-alt"></i> HN & HCM</span>
+                            <span><i class="fas fa-star"></i> Đang diễn ra</span>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== WORLD (VN học trên thế giới) ==================== -->
+    <section class="section section-light" id="world">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-tag">Toàn cầu</div>
+                <h2>Việt Nam học trên Thế giới</h2>
+                <p>Ngành Việt Nam học đã có mặt tại nhiều quốc gia, thu hút sự quan tâm nghiên cứu từ các đại học hàng đầu thế giới.</p>
+            </div>
+
+            <div class="world-grid">
+                <div class="world-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="world-card-header">
+                        <span class="flag">🇺🇸</span>
+                        <div>
+                            <h3>Hoa Kỳ</h3>
+                            <span>Trung tâm nghiên cứu hàng đầu</span>
+                        </div>
+                    </div>
+                    <div class="world-card-body">
+                        <p>Columbia University nhận tài trợ $600,000 từ Quỹ Luce cho dự án "Digitizing Vietnam" – số hóa Việt Nam học qua Digital Humanities.</p>
+                        <ul class="world-universities">
+                            <li><i class="fas fa-university"></i> Columbia University (New York)</li>
+                            <li><i class="fas fa-university"></i> Yale University</li>
+                            <li><i class="fas fa-university"></i> University of California</li>
+                            <li><i class="fas fa-university"></i> University of Houston</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="world-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="world-card-header" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
+                        <span class="flag">🇩🇪</span>
+                        <div>
+                            <h3>Đức</h3>
+                            <span>Lịch sử lâu đời từ 1970</span>
+                        </div>
+                    </div>
+                    <div class="world-card-body">
+                        <p>Vietnamistik xuất hiện tại Đại học Humboldt Berlin từ 1970, sau đó chuyển sang Đại học Hamburg từ 1982 với chương trình đào tạo chính thức.</p>
+                        <ul class="world-universities">
+                            <li><i class="fas fa-university"></i> Đại học Humboldt Berlin (từ 1970)</li>
+                            <li><i class="fas fa-university"></i> Đại học Hamburg (từ 1982)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="world-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="world-card-header" style="background: linear-gradient(135deg, #1b4332, #2d6a4f);">
+                        <span class="flag">🇨🇿</span>
+                        <div>
+                            <h3>Cộng hòa Séc</h3>
+                            <span>Đa dạng chương trình đào tạo</span>
+                        </div>
+                    </div>
+                    <div class="world-card-body">
+                        <p>Nhiều đại học tại Séc có chương trình Vietnamese Studies, phản ánh mối quan hệ lịch sử đặc biệt giữa hai quốc gia.</p>
+                        <ul class="world-universities">
+                            <li><i class="fas fa-university"></i> Charles University (Praha)</li>
+                            <li><i class="fas fa-university"></i> Masaryk University (Brno)</li>
+                            <li><i class="fas fa-university"></i> Palacký University (Olomouc)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="world-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="world-card-header" style="background: linear-gradient(135deg, #c2185b, #e91e63);">
+                        <span class="flag">🇯🇵</span>
+                        <div>
+                            <h3>Nhật Bản</h3>
+                            <span>Đào tạo chuyên sâu</span>
+                        </div>
+                    </div>
+                    <div class="world-card-body">
+                        <p>Tokyo University of Foreign Studies (TUFS) là trung tâm đào tạo Việt Nam học quan trọng nhất tại Nhật Bản.</p>
+                        <ul class="world-universities">
+                            <li><i class="fas fa-university"></i> Tokyo Univ. of Foreign Studies</li>
+                            <li><i class="fas fa-university"></i> Osaka University</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="world-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="world-card-header" style="background: linear-gradient(135deg, #0d47a1, #1976d2);">
+                        <span class="flag">🇰🇷</span>
+                        <div>
+                            <h3>Hàn Quốc</h3>
+                            <span>Nhà đầu tư FDI lớn nhất tại VN</span>
+                        </div>
+                    </div>
+                    <div class="world-card-body">
+                        <p>Khoa Tiếng Việt tại ĐH Ngoại ngữ Hàn Quốc mở từ 1966. Hàn Quốc là nhà đầu tư FDI lớn nhất tại VN với 82 tỷ USD.</p>
+                        <ul class="world-universities">
+                            <li><i class="fas fa-university"></i> Hankuk Univ. of Foreign Studies</li>
+                            <li><i class="fas fa-university"></i> Busan University of Foreign Studies</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="world-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="world-card-header" style="background: linear-gradient(135deg, #4a148c, #7b1fa2);">
+                        <span class="flag">🇦🇺</span>
+                        <div>
+                            <h3>Úc & Khác</h3>
+                            <span>Mở rộng toàn cầu</span>
+                        </div>
+                    </div>
+                    <div class="world-card-body">
+                        <p>Cộng đồng người Việt đông đảo tại Úc, Pháp và nhiều quốc gia khác thúc đẩy nhu cầu nghiên cứu Việt Nam học toàn cầu.</p>
+                        <ul class="world-universities">
+                            <li><i class="fas fa-university"></i> Australian National University</li>
+                            <li><i class="fas fa-university"></i> INALCO (Pháp)</li>
+                            <li><i class="fas fa-university"></i> Đại học Lomonosov (Nga)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== STATISTICS / CHARTS ==================== -->
+    <section class="section section-dark" id="stats">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-tag">Số liệu</div>
+                <h2>Xu hướng & Thống kê</h2>
+                <p>Những con số ấn tượng phản ánh sự phát triển mạnh mẽ của ngành Việt Nam học và bối cảnh Việt Nam.</p>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card" data-aos="fade-right">
+                    <h3><i class="fas fa-chart-bar" style="color: var(--gold);"></i> Quy mô Hội thảo QT Việt Nam học</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="chartConference"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card" data-aos="fade-left">
+                    <h3><i class="fas fa-chart-line" style="color: var(--gold);"></i> GDP Việt Nam (tỷ USD)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="chartGDP"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card" data-aos="fade-right">
+                    <h3><i class="fas fa-chart-pie" style="color: var(--gold);"></i> Sinh viên quốc tế tại VN theo quốc gia</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="chartStudents"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card" data-aos="fade-left">
+                    <h3><i class="fas fa-chart-area" style="color: var(--gold);"></i> Người dùng Internet VN (triệu)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="chartInternet"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== QUOTES ==================== -->
+    <section class="section section-dark" style="padding-top: 0;">
+        <div class="container">
+            <div class="quotes-wrapper" data-aos="fade-up">
+                <div class="quote-slide active">
+                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <blockquote>"Việt Nam học không chỉ là nghiên cứu về quá khứ, mà còn là nền tảng để hiểu hiện tại và xây dựng tương lai bền vững."</blockquote>
+                    <div class="quote-author">— Hội thảo Quốc tế Việt Nam học</div>
+                </div>
+                <div class="quote-slide">
+                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <blockquote>"Sự gia tăng 400% người học tiếng Việt trên toàn cầu chứng tỏ Việt Nam đang thu hút sự quan tâm chưa từng có từ cộng đồng quốc tế."</blockquote>
+                    <div class="quote-author">— Berlitz Language Report 2024</div>
+                </div>
+                <div class="quote-slide">
+                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <blockquote>"Số hóa Việt Nam học là chìa khóa để kết nối nghiên cứu trong nước với học thuật quốc tế trong kỷ nguyên số."</blockquote>
+                    <div class="quote-author">— Dự án Digitizing Vietnam, Columbia University</div>
+                </div>
+                <div class="quote-dots">
+                    <span class="quote-dot active" data-index="0"></span>
+                    <span class="quote-dot" data-index="1"></span>
+                    <span class="quote-dot" data-index="2"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CAREER (Nghề nghiệp) ==================== -->
+    <section class="section" id="career">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-tag">Nghề nghiệp</div>
+                <h2>Cơ hội việc làm rộng mở</h2>
+                <p>Sinh viên tốt nghiệp ngành Việt Nam học có thể làm việc trong nhiều lĩnh vực đa dạng với mức thu nhập hấp dẫn.</p>
+            </div>
+
+            <div class="career-grid">
+                <div class="career-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="career-icon"><i class="fas fa-plane-departure"></i></div>
+                    <h3>Hướng dẫn viên Du lịch</h3>
+                    <p>Giới thiệu đất nước, con người, văn hóa Việt Nam cho du khách trong và ngoài nước. Cơ hội trải nghiệm và khám phá.</p>
+                    <div class="career-salary"><i class="fas fa-money-bill-wave"></i> 8 – 15 triệu VNĐ/tháng</div>
+                </div>
+
+                <div class="career-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="career-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <h3>Giảng viên & Nhà nghiên cứu</h3>
+                    <p>Giảng dạy tại các trường ĐH/CĐ, nghiên cứu chuyên đề về văn hóa, lịch sử, ngôn ngữ Việt Nam.</p>
+                    <div class="career-salary"><i class="fas fa-money-bill-wave"></i> 10 – 20 triệu VNĐ/tháng</div>
+                </div>
+
+                <div class="career-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="career-icon"><i class="fas fa-handshake"></i></div>
+                    <h3>Nhân viên Ngoại giao</h3>
+                    <p>Làm việc tại cơ quan ngoại giao, tổ chức quốc tế, văn phòng thương mại, tổ chức chính phủ và phi chính phủ.</p>
+                    <div class="career-salary"><i class="fas fa-money-bill-wave"></i> 12 – 25 triệu VNĐ/tháng</div>
+                </div>
+
+                <div class="career-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="career-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3>Chuyên gia Tư vấn</h3>
+                    <p>Tư vấn cho nhà đầu tư nước ngoài về luật pháp, văn hóa, vùng miền, địa bàn đầu tư tại Việt Nam.</p>
+                    <div class="career-salary"><i class="fas fa-money-bill-wave"></i> 10 – 18 triệu VNĐ/tháng</div>
+                </div>
+
+                <div class="career-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="career-icon"><i class="fas fa-newspaper"></i></div>
+                    <h3>Truyền thông & Báo chí</h3>
+                    <p>Làm việc trong cơ quan truyền thông, tổ chức sự kiện văn hóa, quảng bá hình ảnh Việt Nam.</p>
+                    <div class="career-salary"><i class="fas fa-money-bill-wave"></i> 8 – 15 triệu VNĐ/tháng</div>
+                </div>
+
+                <div class="career-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="career-icon"><i class="fas fa-museum"></i></div>
+                    <h3>Bảo tàng & Di sản</h3>
+                    <p>Làm việc tại bảo tàng, trung tâm văn hóa, cơ quan quản lý di sản văn hóa vật thể và phi vật thể.</p>
+                    <div class="career-salary"><i class="fas fa-money-bill-wave"></i> 8 – 14 triệu VNĐ/tháng</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CONTACT ==================== -->
+    <section class="section section-light" id="contact">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-tag">Liên hệ</div>
+                <h2>Kết nối với chúng tôi</h2>
+                <p>Bạn quan tâm đến ngành Việt Nam học? Hãy để lại thông tin, chúng tôi sẽ tư vấn chi tiết.</p>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-info" data-aos="fade-right">
+                    <h3>Thông tin liên hệ</h3>
+                    <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn tìm hiểu về ngành Việt Nam học, chương trình đào tạo và cơ hội nghề nghiệp.</p>
+
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>
+                            <h4>Địa chỉ</h4>
+                            <span>336 Nguyễn Trãi, Thanh Xuân, Hà Nội</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <h4>Email</h4>
+                            <span>vietnamhoc@vnu.edu.vn</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon"><i class="fas fa-phone"></i></div>
+                        <div>
+                            <h4>Điện thoại</h4>
+                            <span>(024) 3858 3289</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <h4>Giờ làm việc</h4>
+                            <span>Thứ 2 – Thứ 6: 8:00 – 17:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="contact-form" data-aos="fade-left" id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Họ và tên *</label>
+                            <input type="text" placeholder="Nguyễn Văn A" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" placeholder="email@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Số điện thoại</label>
+                            <input type="tel" placeholder="0123 456 789">
+                        </div>
+                        <div class="form-group">
+                            <label>Chủ đề quan tâm</label>
+                            <select>
+                                <option value="">-- Chọn --</option>
+                                <option>Tuyển sinh ngành Việt Nam học</option>
+                                <option>Chương trình đào tạo</option>
+                                <option>Hội thảo quốc tế</option>
+                                <option>Hợp tác nghiên cứu</option>
+                                <option>Cơ hội nghề nghiệp</option>
+                                <option>Khác</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nội dung tin nhắn *</label>
+                        <textarea placeholder="Nhập nội dung bạn muốn trao đổi..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Gửi tin nhắn
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3><i class="fas fa-star" style="color: var(--gold);"></i> Việt Nam <span>Học</span></h3>
+                    <p>Website nghiên cứu và giới thiệu ngành Việt Nam học – Vietnamese Studies. Khám phá đất nước, con người và văn hóa Việt Nam qua góc nhìn học thuật và xu hướng toàn cầu.</p>
+                    <div class="footer-socials">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4>Khám phá</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">Giới thiệu</a></li>
+                        <li><a href="#branches">Chuyên ngành</a></li>
+                        <li><a href="#curriculum">Đào tạo</a></li>
+                        <li><a href="#timeline">Hội thảo</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Thông tin</h4>
+                    <ul class="footer-links">
+                        <li><a href="#world">Thế giới</a></li>
+                        <li><a href="#stats">Số liệu</a></li>
+                        <li><a href="#career">Nghề nghiệp</a></li>
+                        <li><a href="#contact">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Nguồn tham khảo</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">ĐHQG Hà Nội</a></li>
+                        <li><a href="#">Viện VN học & KHPT</a></li>
+                        <li><a href="#">Columbia University</a></li>
+                        <li><a href="#">ICEF Monitor</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Việt Nam Học – Vietnamese Studies | Thiết kế bởi <strong>Sinh viên CNTT</strong> | Báo cáo môn Thiết kế Web</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== BACK TO TOP & DARK MODE ==================== -->
+    <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
+    <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i> Gửi thành công! Cảm ơn bạn.</div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // ============================
+        // PRELOADER
+        // ============================
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 1500);
+            AOS.init({
+                duration: 800,
+                easing: 'ease-out-cubic',
+                once: true,
+                offset: 80
+            });
+        });
+
+        // ============================
+        // PARTICLES
+        // ============================
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                particle.style.width = particle.style.height = (Math.random() * 4 + 2) + 'px';
+                container.appendChild(particle);
+            }
+        })();
+
+        // ============================
+        // NAVBAR SCROLL
+        // ============================
+        const navbar = document.getElementById('navbar');
+        const backToTop = document.getElementById('backToTop');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+
+            // Navbar bg
+            navbar.classList.toggle('scrolled', scrollY > 50);
+
+            // Back to top
+            backToTop.classList.toggle('visible', scrollY > 500);
+
+            // Active link
+            const sections = document.querySelectorAll('section[id]');
+            sections.forEach(sec => {
+                const top = sec.offsetTop - 120;
+                const bottom = top + sec.offsetHeight;
+                const id = sec.getAttribute('id');
+                if (scrollY >= top && scrollY < bottom) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ============================
+        // MOBILE NAV
+        // ============================
+        const navToggle = document.getElementById('navToggle');
+        const navMobile = document.getElementById('navMobile');
+        const navMobileClose = document.getElementById('navMobileClose');
+
+        navToggle.addEventListener('click', () => navMobile.classList.add('open'));
+        navMobileClose.addEventListener('click', () => navMobile.classList.remove('open'));
+        navMobile.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => navMobile.classList.remove('open'));
+        });
+
+        // ============================
+        // COUNTER ANIMATION
+        // ============================
+        const counters = document.querySelectorAll('.counter');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = +counter.dataset.target;
+                    const duration = 2000;
+                    const step = target / (duration / 16);
+                    let current = 0;
+
+                    const updateCounter = () => {
+                        current += step;
+                        if (current < target) {
+                            counter.textContent = Math.ceil(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target;
+                        }
+                    };
+                    updateCounter();
+                    counterObserver.unobserve(counter);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(c => counterObserver.observe(c));
+
+        // ============================
+        // TABS
+        // ============================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ============================
+        // QUOTES SLIDER
+        // ============================
+        let currentQuote = 0;
+        const quotes = document.querySelectorAll('.quote-slide');
+        const dots = document.querySelectorAll('.quote-dot');
+
+        function showQuote(index) {
+            quotes.forEach(q => q.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            quotes[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentQuote = index;
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => showQuote(+dot.dataset.index));
+        });
+
+        setInterval(() => {
+            showQuote((currentQuote + 1) % quotes.length);
+        }, 5000);
+
+        // ============================
+        // DARK MODE
+        // ============================
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = darkModeToggle.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        });
+
+        // ============================
+        // CONTACT FORM
+        // ============================
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+            e.target.reset();
+        });
+
+        // ============================
+        // CHARTS
+        // ============================
+        const chartColors = {
+            red: 'rgba(178, 34, 34, 0.8)',
+            gold: 'rgba(218, 165, 32, 0.8)',
+            blue: 'rgba(52, 152, 219, 0.8)',
+            green: 'rgba(39, 174, 96, 0.8)',
+            purple: 'rgba(142, 68, 173, 0.8)',
+            orange: 'rgba(230, 126, 34, 0.8)',
+            teal: 'rgba(26, 188, 156, 0.8)',
+        };
+
+        const defaultOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: 'rgba(255,255,255,0.6)' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                y: {
+                    ticks: { color: 'rgba(255,255,255,0.6)' },
+                    grid: { color: 'rgba(255,255,255,0.08)' }
+                }
+            }
+        };
+
+        // Chart 1: Conference Scale
+        new Chart(document.getElementById('chartConference'), {
+            type: 'bar',
+            data: {
+                labels: ['1998', '2004', '2008', '2012', '2016', '2021', '2024'],
+                datasets: [{
+                    label: 'Số đại biểu tham gia',
+                    data: [300, 500, 650, 1780, 1200, 1000, 800],
+                    backgroundColor: [
+                        chartColors.gold, chartColors.red, chartColors.blue,
+                        chartColors.green, chartColors.purple, chartColors.orange,
+                        chartColors.teal
+                    ],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                ...defaultOptions,
+                plugins: {
+                    ...defaultOptions.plugins,
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Chart 2: GDP
+        new Chart(document.getElementById('chartGDP'), {
+            type: 'line',
+            data: {
+                labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: 'GDP (tỷ USD)',
+                    data: [193, 205, 224, 245, 262, 271, 366, 409, 430, 431],
+                    borderColor: chartColors.gold,
+                    backgroundColor: 'rgba(218,165,32,0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: chartColors.gold,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    borderWidth: 3,
+                }]
+            },
+            options: defaultOptions
+        });
+
+        // Chart 3: International Students
+        new Chart(document.getElementById('chartStudents'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Lào', 'Campuchia', 'Trung Quốc', 'Hàn Quốc', 'Nhật Bản', 'Pháp', 'Khác'],
+                datasets: [{
+                    data: [30, 20, 18, 12, 8, 5, 7],
+                    backgroundColor: [
+                        chartColors.red, chartColors.gold, chartColors.blue,
+                        chartColors.green, chartColors.purple, chartColors.orange,
+                        chartColors.teal
+                    ],
+                    borderWidth: 2,
+                    borderColor: 'rgba(26,26,46,0.8)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: 'rgba(255,255,255,0.7)', padding: 12, font: { size: 11 } }
+                    }
+                }
+            }
+        });
+
+        // Chart 4: Internet Users
+        new Chart(document.getElementById('chartInternet'), {
+            type: 'line',
+            data: {
+                labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: 'Người dùng (triệu)',
+                    data: [49, 53, 58, 62, 68, 72, 74, 77, 79],
+                    borderColor: chartColors.blue,
+                    backgroundColor: 'rgba(52,152,219,0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: chartColors.blue,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    borderWidth: 3,
+                }, {
+                    label: '% Smartphone (ước tính)',
+                    data: [60, 65, 72, 78, 84, 88, 92, 95, 98],
+                    borderColor: chartColors.green,
+                    backgroundColor: 'rgba(39,174,96,0.05)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: chartColors.green,
+                    pointRadius: 4,
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                }]
+            },
+            options: defaultOptions
+        });
+    </script>
+</body>
+</html>
